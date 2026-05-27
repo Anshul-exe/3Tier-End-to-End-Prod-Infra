@@ -9,9 +9,23 @@ connection();
 app.use(express.json());
 app.use(cors());
 
-app.get('/ok', (req, res) => {
-    res.status(200).send('ok')
-  })
+app.get("/ok", (req, res) => {
+  res.status(200).send("ok");
+});
+
+// will replace this with /ok for better liveness and readiness probe practice
+// app.get("/healthz", (req, res) => {
+//   res.sendStatus(200);
+// });
+//
+// app.get("/readyz", async (req, res) => {
+//   try {
+//     await mongoose.connection.db.admin().ping();
+//     res.sendStatus(200);
+//   } catch {
+//     res.sendStatus(500);
+//   }
+// });
 
 app.use("/api/tasks", tasks);
 
