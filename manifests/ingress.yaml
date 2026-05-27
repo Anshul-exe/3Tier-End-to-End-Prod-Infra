@@ -15,13 +15,6 @@ spec:
     - host: assignment.anshulfml.me
       http:
         paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 3500
           - path: /
             pathType: Prefix
             backend:
