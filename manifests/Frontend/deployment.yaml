@@ -27,6 +27,13 @@ spec:
         - name: frontend
           image: 632377784699.dkr.ecr.ap-south-1.amazonaws.com/three-tier-lab-frontend:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
           env:
             - name: REACT_APP_BACKEND_URL
               value: "https://assignment.anshulfml.me/api/tasks"
