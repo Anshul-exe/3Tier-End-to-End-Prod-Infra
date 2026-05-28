@@ -180,45 +180,45 @@ kube-system namespace:
 
 ### Application Layer
 
-| Component | Technology | Version |
-|-----------|-----------|---------|
-| Frontend | React | Latest |
-| Frontend Server | Nginx | Alpine |
-| Backend | Node.js / Express | 14 |
-| Database | MongoDB | 4.4.6 |
+| Component       | Technology        | Version |
+| --------------- | ----------------- | ------- |
+| Frontend        | React             | Latest  |
+| Frontend Server | Nginx             | Alpine  |
+| Backend         | Node.js / Express | 14      |
+| Database        | MongoDB           | 4.4.6   |
 
 ### Infrastructure & Cloud
 
-| Component | Technology | Details |
-|-----------|-----------|---------|
-| Cloud Provider | AWS | ap-south-1 |
-| Container Orchestration | Amazon EKS | Kubernetes v1.34 |
-| Load Balancer | AWS ALB | Internet-facing, TLS-terminated |
-| Container Registry | Amazon ECR | Private, IAM pull-only |
-| TLS Certificates | AWS ACM | `assignment.anshulfml.me` |
-| Networking | AWS VPC | `192.168.0.0/16` |
-| NAT Egress | AWS NAT Gateway | Public subnet, private node egress |
-| Bastion | AWS EC2 | IMDSv2 enforced, SSM-enabled |
+| Component               | Technology      | Details                            |
+| ----------------------- | --------------- | ---------------------------------- |
+| Cloud Provider          | AWS             | ap-south-1                         |
+| Container Orchestration | Amazon EKS      | Kubernetes v1.34                   |
+| Load Balancer           | AWS ALB         | Internet-facing, TLS-terminated    |
+| Container Registry      | Amazon ECR      | Private, IAM pull-only             |
+| TLS Certificates        | AWS ACM         | `assignment.anshulfml.me`          |
+| Networking              | AWS VPC         | `192.168.0.0/16`                   |
+| NAT Egress              | AWS NAT Gateway | Public subnet, private node egress |
+| Bastion                 | AWS EC2         | IMDSv2 enforced, SSM-enabled       |
 
 ### Kubernetes Components
 
-| Component | Role |
-|-----------|------|
-| AWS Load Balancer Controller | ALB lifecycle management via Ingress |
-| metrics-server | CPU/memory metrics provider for HPA |
-| aws-node (VPC CNI) | Pod networking with VPC-native IPs |
-| kube-proxy | Service networking (iptables) |
-| Horizontal Pod Autoscaler | API-tier autoscaling (2–6 pods, CPU 60%) |
+| Component                    | Role                                     |
+| ---------------------------- | ---------------------------------------- |
+| AWS Load Balancer Controller | ALB lifecycle management via Ingress     |
+| metrics-server               | CPU/memory metrics provider for HPA      |
+| aws-node (VPC CNI)           | Pod networking with VPC-native IPs       |
+| kube-proxy                   | Service networking (iptables)            |
+| Horizontal Pod Autoscaler    | API-tier autoscaling (2–6 pods, CPU 60%) |
 
 ### DevOps Toolchain
 
-| Area | Tool |
-|------|------|
-| Image Build | Docker (multi-stage) |
-| Manifests | Kubernetes YAML |
-| Access Control | IAM Roles for Node Groups |
+| Area              | Tool                             |
+| ----------------- | -------------------------------- |
+| Image Build       | Docker (multi-stage)             |
+| Manifests         | Kubernetes YAML                  |
+| Access Control    | IAM Roles for Node Groups        |
 | Secret Management | Kubernetes Secrets (`mongo-sec`) |
-| Remote Access | SSH + AWS SSM (bastion) |
+| Remote Access     | SSH + AWS SSM (bastion)          |
 
 ---
 
@@ -335,33 +335,33 @@ kubectl apply -f /home/ec2-user/<manifest.yaml>
 
 ### Network Security
 
-| Control | Implementation | Status |
-|---------|---------------|--------|
-| Private EKS endpoint | Public access disabled on control plane | Implemented |
-| Subnet isolation | DB/API on private subnets, no public IPs | Implemented |
-| ALB TLS termination | ACM certificate, HTTPS redirect enabled | Implemented |
-| Bastion SG restriction | SSH locked to operator IP via SG rule | Implemented |
-| NAT Gateway egress | Private nodes reach internet outbound-only | Implemented |
+| Control                | Implementation                             | Status      |
+| ---------------------- | ------------------------------------------ | ----------- |
+| Private EKS endpoint   | Public access disabled on control plane    | Implemented |
+| Subnet isolation       | DB/API on private subnets, no public IPs   | Implemented |
+| ALB TLS termination    | ACM certificate, HTTPS redirect enabled    | Implemented |
+| Bastion SG restriction | SSH locked to operator IP via SG rule      | Implemented |
+| NAT Gateway egress     | Private nodes reach internet outbound-only | Implemented |
 
 ### Identity & Access
 
-| Control | Implementation | Status |
-|---------|---------------|--------|
-| ECR pull via IAM | `AmazonEC2ContainerRegistryPullOnly` on node role | Implemented |
-| No static ECR credentials | IAM instance profile handles auth | Implemented |
-| IMDSv2 enforcement | `HttpTokens: required` on bastion EC2 | Implemented |
-| SSM access | Bastion has `AmazonSSMManagedInstanceCore`, no need for open port 22 as fallback | Implemented |
+| Control                   | Implementation                                                                   | Status      |
+| ------------------------- | -------------------------------------------------------------------------------- | ----------- |
+| ECR pull via IAM          | `AmazonEC2ContainerRegistryPullOnly` on node role                                | Implemented |
+| No static ECR credentials | IAM instance profile handles auth                                                | Implemented |
+| IMDSv2 enforcement        | `HttpTokens: required` on bastion EC2                                            | Implemented |
+| SSM access                | Bastion has `AmazonSSMManagedInstanceCore`, no need for open port 22 as fallback | Implemented |
 
 ### Known Gaps (Production Recommendations)
 
 > These are acknowledged limitations.
 
-| Gap | Risk | ToDo |
-|-----|------|----------------|
+| Gap                                | Risk                               | ToDo                                                       |
+| ---------------------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `mongo-sec` stored in Git (base64) | Secret exposure in version control | Migrate to AWS Secrets Manager + External Secrets Operator |
-| HostPath PVC for MongoDB | Data loss if node is replaced | Migrate to EBS-backed PersistentVolume (`gp3`) |
-| No cluster autoscaler | Node count is static | Add Karpenter or Cluster Autoscaler |
-| Frontend on public subnet node | Increased blast radius | Move behind private ALB if not serving external users |
+| HostPath PVC for MongoDB           | Data loss if node is replaced      | Migrate to EBS-backed PersistentVolume (`gp3`)             |
+| No cluster autoscaler              | Node count is static               | Add Karpenter or Cluster Autoscaler                        |
+| Frontend on public subnet node     | Increased blast radius             | Move behind private ALB if not serving external users      |
 
 ---
 
@@ -386,14 +386,14 @@ HPA Controller (api-hpa)
 API Deployment (scales 2 → 6 pods)
 ```
 
-| Parameter | Value |
-|-----------|-------|
-| HPA Name | `api-hpa` |
-| Target Deployment | `api` |
-| Min Replicas | 2 |
-| Max Replicas | 6 |
-| Scale Metric | CPU Utilization |
-| Target Threshold | 60% |
+| Parameter         | Value           |
+| ----------------- | --------------- |
+| HPA Name          | `api-hpa`       |
+| Target Deployment | `api`           |
+| Min Replicas      | 2               |
+| Max Replicas      | 6               |
+| Scale Metric      | CPU Utilization |
+| Target Threshold  | 60%             |
 
 **No HPA** is configured for frontend (static, low-compute) or MongoDB (stateful — horizontal scaling of MongoDB requires replica sets, not HPA).
 
@@ -433,6 +433,7 @@ Live at https://assignment.anshulfml.me
 ### Dockerfile Strategy
 
 **Backend** (`backend/Dockerfile`):
+
 - Base: `node:14`
 - Single-stage, minimal dependency install
 - Runs Express server on port 3500
@@ -458,6 +459,7 @@ EXPOSE 3000
 ```
 
 The Nginx config in the final image handles:
+
 - Serving the React static build
 - Proxying `/api` requests to the backend service
 
@@ -477,6 +479,7 @@ api       →  mongodb service  →  mongodb-svc.three-tier.svc.cluster.local:27
 ### Environment Configuration
 
 **Backend:**
+
 ```
 MONGO_CONN_STR=mongodb://mongodb-svc:27017/todo?directConnection=true
 MONGO_USERNAME   → from secret: mongo-sec
@@ -484,6 +487,7 @@ MONGO_PASSWORD   → from secret: mongo-sec
 ```
 
 **Frontend:**
+
 ```
 REACT_APP_BACKEND_URL=https://assignment.anshulfml.me/api/tasks
 ```
@@ -527,9 +531,9 @@ readinessProbe:
   periodSeconds: 10
 ```
 
-| Probe | Endpoint | Effect on Failure |
-|-------|----------|-------------------|
-| Liveness | `GET /ok :3500` | Pod is killed and restarted |
+| Probe     | Endpoint        | Effect on Failure                               |
+| --------- | --------------- | ----------------------------------------------- |
+| Liveness  | `GET /ok :3500` | Pod is killed and restarted                     |
 | Readiness | `GET /ok :3500` | Pod removed from Service endpoints (no traffic) |
 
 Frontend and MongoDB do not have custom health check endpoints configured; adding them is a recommended enhancement.
@@ -548,15 +552,15 @@ mongo-pv  (PV, hostPath: /data/db, Retain)
 Node-local disk on db-api-ng node
 ```
 
-| Property | Value |
-|----------|-------|
-| PVC Name | `mongo-volume-claim` |
-| PV Name | `mongo-pv` |
-| Capacity | 1Gi |
-| Access Mode | ReadWriteOnce |
-| Reclaim Policy | Retain |
-| Backend | hostPath (`/data/db`) |
-| StorageClass `gp2` | Exists but unused |
+| Property           | Value                 |
+| ------------------ | --------------------- |
+| PVC Name           | `mongo-volume-claim`  |
+| PV Name            | `mongo-pv`            |
+| Capacity           | 1Gi                   |
+| Access Mode        | ReadWriteOnce         |
+| Reclaim Policy     | Retain                |
+| Backend            | hostPath (`/data/db`) |
+| StorageClass `gp2` | Exists but unused     |
 
 > **Production Note:** HostPath volumes are node-local. If the MongoDB pod is rescheduled to a different node, data will not follow. For production, replace with an EBS-backed dynamic PersistentVolume using the `gp3` StorageClass and the EBS CSI driver.
 
@@ -569,54 +573,63 @@ The following patterns implemented in this project are directly relevant to my *
 ---
 
 ### `PRIVATE EKS CONTROL PLANE + BASTION ARCHITECTURE`
+
 **What:** EKS API server endpoint is private-only. Public access is disabled. All `kubectl` commands are issued from a bastion host inside the VPC.
 **Why it matters:** Eliminates the Kubernetes API server from the internet-facing attack surface. Standard in regulated and enterprise environments.
 
 ---
 
 ### `WORKLOAD ISOLATION VIA NODE TAINTS + TOLERATIONS + NODE AFFINITY`
+
 **What:** The database/API node group is tainted (`dedicated=db-api:NoSchedule`). Only pods with the matching toleration and node affinity can schedule there.
 **Why it matters:** Demonstrates multi-tier workload isolation without a service mesh. Prevents noisy-neighbor interference between frontend and stateful backend workloads.
 
 ---
 
 ### `MULTI-STAGE DOCKER BUILDS`
+
 **What:** Frontend image uses a two-stage Dockerfile — Node.js build stage discarded, only Nginx + static assets shipped.
 **Why it matters:** Reduces final image size significantly. Removes build toolchain from the production container, shrinking attack surface. Industry-standard practice.
 
 ---
 
 ### `IAM-BASED ECR AUTHORIZATION (NO STATIC CREDENTIALS)`
+
 **What:** EKS nodes pull from ECR using the `AmazonEC2ContainerRegistryPullOnly` IAM policy attached to the node instance role. No Docker credentials stored.
 **Why it matters:** Credential-free image pull using AWS IAM is the AWS-recommended approach. Eliminates secret rotation overhead and static credential exposure risk.
 
 ---
 
 ### `AWS LOAD BALANCER CONTROLLER + ALB INGRESS`
+
 **What:** The AWS Load Balancer Controller running in `kube-system` provisions and manages the ALB lifecycle declaratively via Kubernetes Ingress annotations.
 **Why it matters:** Kubernetes-native infrastructure management. The ALB is fully managed through GitOps-compatible YAML manifests.
 
 ---
 
 ### `HORIZONTAL POD AUTOSCALER WITH METRICS-SERVER`
+
 **What:** `api-hpa` scales the API deployment from 2 to 6 replicas based on CPU utilization (60% threshold), using real metrics from `metrics-server`.
 **Why it matters:** Shows understanding of the full HPA pipeline — metrics collection, Metrics API, HPA controller, and pod scaling. A required component in production API deployments.
 
 ---
 
 ### `IMDSv2 ENFORCEMENT ON EC2`
+
 **What:** The bastion EC2 instance enforces IMDSv2 (`HttpTokens: required`), blocking SSRF-based metadata theft attacks.
 **Why it matters:** Prevents SSRF attacks that exploit IMDSv1 to steal IAM credentials from the instance metadata endpoint. Required by AWS security baselines.
 
 ---
 
 ### `PRIVATE SUBNET ISOLATION FOR STATEFUL WORKLOADS`
+
 **What:** API and MongoDB pods run exclusively on the `db-api-ng` node group, which lives in private subnets with no public IP assignment. Outbound internet access flows through a NAT Gateway.
 **Why it matters:** Stateful services (databases, APIs with DB access) should never have a path to direct internet exposure. This is VPC design as a security control.
 
 ---
 
 ### `ACM TLS + HTTPS REDIRECT AT THE ALB`
+
 **What:** TLS is terminated at the ALB using an ACM-managed certificate. HTTP traffic is redirected to HTTPS automatically.
 **Why it matters:** Offloads TLS overhead from application pods. Centralized certificate management with automatic renewal via ACM.
 
