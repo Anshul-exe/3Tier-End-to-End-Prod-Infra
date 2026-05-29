@@ -30,7 +30,7 @@
 - [Application Wiring](#application-wiring)
 - [Health Checks](#health-checks)
 - [Storage](#storage)
-- [Resume-Worthy Highlights](#resume-worthy-highlights)
+- [Key Highlights](#key-highlights)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
