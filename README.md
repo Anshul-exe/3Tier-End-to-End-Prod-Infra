@@ -16,6 +16,7 @@
 
 - [Overview](#overview)
 - [Architecture](#architecture)
+  - [Complete Infra](#complete-infra)
   - [High-Level Architecture](#high-level-architecture)
   - [Traffic Flow Diagram](#traffic-flow-diagram)
   - [Kubernetes Workload Layout](#kubernetes-workload-layout)
@@ -53,6 +54,8 @@ This project demonstrates a **full production-grade deployment** of a TODO appli
 ---
 
 ## Architecture
+### Complete Infra
+<img width="1644" height="1744" alt="arch" src="https://github.com/user-attachments/assets/af50c595-ccec-491b-8308-789b092064ee" />
 
 ### High-Level Architecture
 
