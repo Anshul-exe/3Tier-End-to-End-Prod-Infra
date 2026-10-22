@@ -16,9 +16,9 @@
 
 <div align="center">
 
-<video src="https://github.com/user-attachments/assets/bbec55a5-cede-445d-9da9-e04e2c91224f" controls></video>
+[![Architecture walkthrough](docs/walkthrough.gif)](https://github.com/Anshul-exe/3Tier-End-to-End-Prod-Infra/issues/1)
 
-34s &nbsp;·&nbsp; 1920×1080 &nbsp;·&nbsp; **unmute for sound**
+**[▶ Click to watch the complete video, with audio](https://github.com/Anshul-exe/3Tier-End-to-End-Prod-Infra/issues/1)** &nbsp;·&nbsp; 34s · 1920×1080
 
 </div>
 
