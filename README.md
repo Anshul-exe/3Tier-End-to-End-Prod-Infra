@@ -16,7 +16,7 @@
 
 <div align="center">
 
-[![Architecture walkthrough](docs/walkthrough.gif)](https://github.com/user-attachments/assets/bbec55a5-cede-445d-9da9-e04e2c91224f)
+![Architecture walkthrough](docs/walkthrough.gif)
 
 **[▶ Click to watch the video, with audio](https://github.com/user-attachments/assets/bbec55a5-cede-445d-9da9-e04e2c91224f)** &nbsp;·&nbsp; 34s · 1920×1080
 
