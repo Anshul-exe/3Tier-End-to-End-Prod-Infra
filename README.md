@@ -16,9 +16,9 @@
 
 <div align="center">
 
-[![Watch the walkthrough](docs/walkthrough-poster.jpg)](https://github.com/Anshul-exe/Three-Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)
+[![Watch the walkthrough](docs/walkthrough-poster.jpg)](https://github.com/Anshul-exe/3Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)
 
-**[▶ Play the 34-second walkthrough](https://github.com/Anshul-exe/Three-Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)** &nbsp;·&nbsp; 1920×1080 · sound on
+**[▶ Play the 34-second walkthrough](https://github.com/Anshul-exe/3Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)** &nbsp;·&nbsp; 1920×1080 · sound on
 
 </div>
 
