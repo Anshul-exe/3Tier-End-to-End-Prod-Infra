@@ -12,8 +12,23 @@
 
 ---
 
+## Walkthrough
+
+<div align="center">
+
+[![Watch the walkthrough](docs/walkthrough-poster.jpg)](https://github.com/Anshul-exe/Three-Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)
+
+**[▶ Play the 34-second walkthrough](https://github.com/Anshul-exe/Three-Tier-End-to-End-Prod-Infra/blob/main/docs/walkthrough.mp4)** &nbsp;·&nbsp; 1920×1080 · sound on
+
+</div>
+
+A 34-second tour of the whole system — the private control plane and bastion access model, VPC/subnet workload isolation with taints and node affinity, the `docker build` → ECR → bastion → `kubectl apply` path, a readiness-gated rolling update, the implemented security controls and the HPA, ending on the ALB's HTTPS redirect answering live.
+
+---
+
 ## Table of Contents
 
+- [Walkthrough](#walkthrough)
 - [Overview](#overview)
 - [Architecture](#architecture)
   - [Complete Infra](#complete-infra)
