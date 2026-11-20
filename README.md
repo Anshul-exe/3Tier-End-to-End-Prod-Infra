@@ -70,127 +70,36 @@ This project demonstrates a **full production-grade deployment** of a TODO appli
 
 ## Architecture
 ### Complete Infra
-<img width="1644" height="1744" alt="arch" src="https://github.com/user-attachments/assets/af50c595-ccec-491b-8308-789b092064ee" />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/01-complete-infrastructure-dark.png">
+  <img alt="Complete infrastructure: AWS VPC, public and private subnets, ALB, EKS node groups, bastion, NAT, ECR, ACM and IAM" src="docs/diagrams/01-complete-infrastructure.png">
+</picture>
 
 ### High-Level Architecture
 
-```
-                          Internet
-                             │
-                    ┌────────▼────────┐
-                    │  Route 53 / DNS │
-                    │  assignment.    │
-                    │  anshulfml.me   │
-                    └────────┬────────┘
-                             │  HTTPS (443)
-                    ┌────────▼────────────────┐
-                    │   Internet-Facing ALB   │
-                    │  k8s-threetie-mainlb-*  │
-                    │  TLS Termination (ACM)  │
-                    │  HTTPS Redirect Enabled │
-                    └────────┬────────────────┘
-                             │  HTTP (forwarded)
-              ┌──────────────▼───────────────────┐
-              │         AWS EKS Cluster          │
-              │       three-tier-cluster         │
-              │         (Kubernetes v1.34)       │
-              │                                  │
-              │  ┌─────────────────────────────┐ │
-              │  │     Namespace: three-tier   │ │
-              │  │                             │ │
-              │  │  ┌──────────────────────┐   │ │
-              │  │  │  Frontend (Nginx)    │   │ │
-              │  │  │  React App : 3000    │   │ │
-              │  │  │  1 replica           │   │ │
-              │  │  │  Public Subnet Node  │   │ │
-              │  │  └──────────┬───────────┘   │ │
-              │  │             │  /api proxy   │ │
-              │  │  ┌──────────▼───────────┐   │ │
-              │  │  │  Backend API         │   │ │
-              │  │  │  Node.js/Express     │   │ │
-              │  │  │  Port 3500           │   │ │
-              │  │  │  HPA: 2-6 replicas   │   │ │
-              │  │  │  Private Subnet Node │   │ │
-              │  │  └──────────┬───────────┘   │ │
-              │  │             │  mongodb-svc  │ │
-              │  │  ┌──────────▼───────────┐   │ │
-              │  │  │  MongoDB 4.4.6       │   │ │
-              │  │  │  Port 27017          │   │ │
-              │  │  │  PVC: 1Gi (hostPath) │   │ │
-              │  │  │  Private Subnet Node │   │ │
-              │  │  └──────────────────────┘   │ │
-              │  └─────────────────────────────┘ │
-              └──────────────────────────────────┘
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/02-high-level-architecture-dark.png">
+  <img alt="High-level architecture: user and DNS to the ALB, then the presentation, application and data tiers inside EKS" src="docs/diagrams/02-high-level-architecture.png">
+</picture>
 
 ---
 
 ### Traffic Flow Diagram
 
-```
-User Browser
-    │
-    │  DNS lookup: assignment.anshulfml.me
-    ▼
-DNS Resolution (Cloudflare / Route 53)
-    │
-    │  Resolves to ALB DNS endpoint
-    ▼
-Internet-Facing ALB  ──── ACM Certificate (TLS)
-    │                     HTTP → HTTPS redirect
-    │  ALB Ingress rules (AWS Load Balancer Controller)
-    ▼
-Ingress: mainlb (class: alb)
-    │
-    │  Route: /  →  frontend service (ClusterIP :3000)
-    ▼
-Frontend Pod (Nginx)
-    │
-    │  Nginx reverse proxy: /api → api service (ClusterIP :3500)
-    ▼
-Backend API Pod (Node.js/Express)
-    │
-    │  MONGO_CONN_STR: mongodb://mongodb-svc:27017/todo
-    │  Auth: mongo-sec (K8s Secret)
-    ▼
-MongoDB Pod
-    │
-    │  PVC: mongo-volume-claim → PV: mongo-pv (1Gi, hostPath /data/db)
-    ▼
-Persistent Storage (node-local)
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/03-traffic-flow-dark.png">
+  <img alt="Traffic flow: the eight hops of one request, from DNS lookup to MongoDB writing to its persistent volume" src="docs/diagrams/03-traffic-flow.png">
+</picture>
 
 ---
 
 ### Kubernetes Workload Layout
 
-```
-Cluster: three-tier-cluster (ap-south-1)
-│
-├── Node Group: ng-7f9c0e2a  [PUBLIC SUBNETS]
-│   ├── Instance type: t3.small
-│   ├── Scale: 2-4 nodes
-│   ├── Public IPs: Yes
-│   └── Workloads:
-│       └── frontend (1 replica, no affinity constraint)
-│
-└── Node Group: db-api-ng  [PRIVATE SUBNETS]
-    ├── Instance type: t3.small
-    ├── Scale: 2-4 nodes
-    ├── Public IPs: No (NAT Gateway for egress)
-    ├── Taint: dedicated=db-api:NoSchedule   ◄── [HIGHLIGHTED: workload isolation]
-    ├── Label: workload=db-api
-    └── Workloads:
-        ├── api  (HPA: 2-6 replicas, nodeAffinity: workload=db-api)
-        └── mongodb  (1 replica, nodeAffinity: workload=db-api)
-
-
-kube-system namespace:
-├── aws-node (DaemonSet)          — VPC CNI networking
-├── kube-proxy (DaemonSet)        — iptables/ipvs rules
-├── metrics-server (Deployment)   — CPU/memory metrics for HPA
-└── aws-load-balancer-controller  — ALB provisioning & lifecycle
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/04-kubernetes-workload-layout-dark.png">
+  <img alt="Kubernetes workload layout: control plane, three-tier namespace objects, both node groups with taints and affinity, and kube-system add-ons" src="docs/diagrams/04-kubernetes-workload-layout.png">
+</picture>
 
 ---
 
@@ -419,34 +328,10 @@ API Deployment (scales 2 → 6 pods)
 
 ## Build & Deployment Workflow
 
-```
-Developer Workstation
-        │
-        │  1. Write code (frontend / backend)
-        ▼
-Local Docker Build
-        │
-        │  2a. docker build -t three-tier-lab-backend ./backend
-        │  2b. docker build -t three-tier-lab-frontend ./frontend
-        │       (multi-stage: Node build → Nginx serve)
-        ▼
-Amazon ECR (Private Registry)
-        │
-        │  3. aws ecr get-login-password | docker login
-        │     docker push 632377784699.dkr.ecr.ap-south-1.amazonaws.com/three-tier-lab-*
-        ▼
-Bastion Host (inside VPC)
-        │
-        │  4. scp manifests/ to bastion
-        │     kubectl apply -f manifests/ -n three-tier
-        ▼
-EKS (three-tier-cluster)
-        │
-        │  5. Nodes pull images from ECR via IAM
-        │     AWS LB Controller provisions/updates ALB
-        ▼
-Live at https://assignment.anshulfml.me
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/05-build-deploy-workflow-dark.png">
+  <img alt="Build and deployment workflow: docker build and push to ECR, scp and kubectl apply from the bastion, image pull, ALB provisioning, live site" src="docs/diagrams/05-build-deploy-workflow.png">
+</picture>
 
 ### Dockerfile Strategy
 
