@@ -71,35 +71,23 @@ This project demonstrates a **full production-grade deployment** of a TODO appli
 ## Architecture
 ### Complete Infra
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/01-complete-infrastructure-dark.png">
-  <img alt="Complete infrastructure: AWS VPC, public and private subnets, ALB, EKS node groups, bastion, NAT, ECR, ACM and IAM" src="docs/diagrams/01-complete-infrastructure.png">
-</picture>
+![Complete infrastructure: AWS VPC, public and private subnets, ALB, EKS node groups, bastion, NAT, ECR, ACM and IAM](docs/diagrams/01-complete-infrastructure.png)
 
 ### High-Level Architecture
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/02-high-level-architecture-dark.png">
-  <img alt="High-level architecture: user and DNS to the ALB, then the presentation, application and data tiers inside EKS" src="docs/diagrams/02-high-level-architecture.png">
-</picture>
+![High-level architecture: user and DNS to the ALB, then the presentation, application and data tiers inside EKS](docs/diagrams/02-high-level-architecture.png)
 
 ---
 
 ### Traffic Flow Diagram
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/03-traffic-flow-dark.png">
-  <img alt="Traffic flow: the eight hops of one request, from DNS lookup to MongoDB writing to its persistent volume" src="docs/diagrams/03-traffic-flow.png">
-</picture>
+![Traffic flow: the eight hops of one request, from DNS lookup to MongoDB writing to its persistent volume](docs/diagrams/03-traffic-flow.png)
 
 ---
 
 ### Kubernetes Workload Layout
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/04-kubernetes-workload-layout-dark.png">
-  <img alt="Kubernetes workload layout: control plane, three-tier namespace objects, both node groups with taints and affinity, and kube-system add-ons" src="docs/diagrams/04-kubernetes-workload-layout.png">
-</picture>
+![Kubernetes workload layout: control plane, three-tier namespace objects, both node groups with taints and affinity, and kube-system add-ons](docs/diagrams/04-kubernetes-workload-layout.png)
 
 ---
 
@@ -328,10 +316,7 @@ API Deployment (scales 2 → 6 pods)
 
 ## Build & Deployment Workflow
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/05-build-deploy-workflow-dark.png">
-  <img alt="Build and deployment workflow: docker build and push to ECR, scp and kubectl apply from the bastion, image pull, ALB provisioning, live site" src="docs/diagrams/05-build-deploy-workflow.png">
-</picture>
+![Build and deployment workflow: docker build and push to ECR, scp and kubectl apply from the bastion, image pull, ALB provisioning, live site](docs/diagrams/05-build-deploy-workflow.png)
 
 ### Dockerfile Strategy
 
